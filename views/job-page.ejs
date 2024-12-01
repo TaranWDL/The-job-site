@@ -1,0 +1,27 @@
+<%- include("partials/header.ejs") %>
+
+<div id="job-page-container">
+
+<div id="job-content">
+<% if (locals.content) { %>
+    <h1><%= content.jobTitle %></h1> 
+    <div id="metadata">
+        <p><%= content.employerName %> - <%= content.locationName %></p>
+        <% if (content.salary != null) { %>
+            <p><%= content.salary %></p>
+            <% } else { %>
+            <p>Salary not specified</p>
+            <% } %>
+        
+        <p>Closes on <%= content.expirationDate %></p>
+        <p><%= content.contractType %></p>
+    </div>
+    <a href="<%=content.externalUrl%>"><button id="apply">APPLY</button></a>
+    <p>
+        <%- content.jobDescription %>
+    </p>
+    <% }%>
+
+</div>
+<%- include("partials/footer.ejs") %>
+</div>

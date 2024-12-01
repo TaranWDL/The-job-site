@@ -1,0 +1,121 @@
+<%- include("partials/header.ejs") %>
+
+
+<div id="results-container">
+
+<div id="job-container">
+    <h1 style="align-self: center;">Results for "<%= searchwords %>"</h1>
+
+    <div id="results-sort">
+        <form action="/filter" method="POST">
+            <input type="hidden" name="searchwords" value="<%=searchwords %>">
+            <% var locations = [] %>
+            <select class="preset-options" name="location">
+                <option value="">Location</option>
+                <% content.forEach(function(job) { %>
+                    
+                    <%if (!(locations.includes(job.locationName)) && (!(/\d/.test(job.locationName)))) {%>
+                        <option value="<%=job.locationName%>"><%=job.locationName%></option>
+                        <%}%>
+                    
+                    <% locations.push(job.locationName) %>
+                <% }) %>
+                
+              </select>
+
+              <select class="preset-options" name="distance">
+                <option value="">Distance from location</option>
+                <option value="15">15 miles</option>
+                <option value="25">25 miles</option>
+                <option value="50">50 miles</option>
+                <option value="75">75 miles</option>
+                <option value="100">100 miles</option>
+              </select>
+
+              <select class="preset-options" name="minSal">
+                <option value="">Minimum salary</option>
+                <option value="15000">£15,000</option>
+                <option value="20000">£20,000</option>
+                <option value="25000">£25,000</option>
+                <option value="30000">£30,000</option>
+                <option value="40000">£40,000</option>
+                <option value="50000">£50,000</option>
+                <option value="60000">£60,000</option>
+                <option value="80000">£80,000</option>
+                <option value="100000">£100,000</option>
+              </select>
+
+              <input type="submit" value="Search">
+        </form>
+    </div>
+
+<% if (locals.content) { %>
+    <% if (!(JSON.stringify(locals.content) == "[]")) {%>
+        <% content.forEach(function(job) { %>
+            <a href="/job/<%= job.jobId%>"><div class="job-result">
+                <h2><%= job.jobTitle %></h2>
+                <p><b>Employer: </b> <%= job.employerName %></p>
+                <p><b>Location: </b> <%= job.locationName %></p>
+                
+                <% let maxSal = null %>
+                <% let minSal = null %>
+                <% var symbol = "" %>
+                <% if (String(job.currency) == "GBP") {%>
+                    <% symbol = "£"; %>
+                <% } else if (String(job.currency) == "USD") {%>
+                    <% symbol = "$"; %>
+                <% } else if (String(job.currency) == "EUR") {%>
+                    <% symbol = "€"; %>
+                <% } %>
+    
+               <% if (typeof job.minimumSalary === "number") { %>
+                    <% minSal = job.minimumSalary.toString(); %>
+                    <%if (/\./.test(minSal))  {%>
+                        <% if (minSal.length - 5 > 0) { %>
+                            <% minSal = minSal.slice(0, minSal.length - 3) + ',' + minSal.slice(minSal.length - 3); %>
+                            <% } %>
+                            <% } else {%>
+                        <% if (minSal.length - 4 > 0) { %>
+                            <% minSal = minSal.slice(0, minSal.length - 3) + ',' + minSal.slice(minSal.length - 3); %>
+                            <% } %>
+                            <% }%>
+                    
+                        <% }%>
+    
+    
+                <% if (typeof job.maximumSalary === "number") { %>
+                    <% maxSal = job.maximumSalary.toString(); %>
+                    <%if (/\./.test(maxSal))  {%>
+                        <% if (maxSal.length - 5 > 0) { %>
+                            <% maxSal = maxSal.slice(0, maxSal.length - 3) + ',' + maxSal.slice(maxSal.length - 3); %>
+                            <% } %>
+                            <% } else {%>
+                        <% if (maxSal.length - 4 > 0) { %>
+                            <% maxSal = maxSal.slice(0, maxSal.length - 3) + ',' + maxSal.slice(maxSal.length - 3); %>
+                            <% } %>
+                            <% }%>
+                    
+                        <% }%>
+    
+                    
+                <%if ((maxSal != null) && (minSal != null)) {%>
+                    <p><b>Salary: </b> <%=symbol%><%=minSal%> - <%=symbol%><%=maxSal%></p>
+                    <%} else if (minSal != null) {%>
+                        <p><b>Salary: </b> <%=symbol%><%=minSal%></p>
+                        <%} else if (maxSal != null) {%>
+                            <p><b>Salary: </b> <%=symbol%><%=maxSal%></p>
+                            
+                    <%}%>
+                
+                            
+                    
+            </div></a>
+            <% }); %>
+            <% } else { %>
+                <h2 class="error">Sorry, there are no relevant results for your search.</h2>
+            <% } %>
+    <% }%>
+    
+    </div>
+    <%- include("partials/footer.ejs") %>
+</div>

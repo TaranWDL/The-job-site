@@ -1,0 +1,18 @@
+<%- include("partials/header.ejs") %>
+
+<div id="web-header">
+<h1 id="title">Your dream job is one click away.</h1>
+<form action="/submit" method="POST">
+<input type="text" placeholder="Job title" name="job_title"></input>
+<input type="submit" value="Search">
+</form>
+
+<% if (locals.error) { %>
+    <%if (error == true) {%>
+        <h3 class="error">Please provide a job title before searching.</h3>
+        <%}%>
+        <%}%>
+
+</div>
+
+<%- include("partials/footer.ejs") %>
